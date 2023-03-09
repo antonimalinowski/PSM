@@ -2,8 +2,12 @@
 #include <math.h>
 using namespace std;
 
-int precision = 16;
+#define PI 3.14159265359
+
+int precision;
 double input_to_radians(string input);
+double custom_sin(double radians);
+double sin_compare(double radians);
 long fact(int num);
 
 int main()
@@ -11,30 +15,37 @@ int main()
     string input;
     cout << "Enter the argument (in degrees) for sin function: ";
     cin >> input;
+    cout << "Provide precision value: ";
+    cin >> precision;
     double radians = input_to_radians(input);
-    double res = sin(radians);
+    double res = custom_sin(radians);
+    cout << endl;
     cout << "Argument in radians is: " << radians << endl;
-    cout << "Sin(x) for your input: " << res << endl;
+    cout << "Custom sin(x) for your input: " << res << endl;
+    cout << "Standard sin(x) for your input: " << sin(radians) << endl;
+    cout << "Custom sin(x) compared to standard function differs by: " << sin_compare(radians) << endl;
     return 0;
 }
 
 double input_to_radians(string input)
 {
     int degrees = stod(input);
-    double pi = 3.14159265359;
-    return (degrees * (pi / 180));
+    return (degrees * (PI / 180));
 }
 
-double sin(double radians)
+double custom_sin(double radians)
 {
+    int y = 0;
     double res = 0;
-    for (int i = 0; i < precision; i++)
+    if (precision == 1)
+        return radians;
+    for (int i = 1; i < precision; i = i + 2)
     {
-        int sign = pow(-1, i);
-        double nominator = pow(radians, i + 1);
-        double denominator = fact(i + 1);
+        int sign = pow(-1, y);
+        double nominator = pow(radians, i);
+        double denominator = fact(i);
         res = res + sign * nominator / denominator;
-        i++;
+        y++;
     }
 
     return res;
@@ -49,4 +60,9 @@ long fact(int num)
     }
 
     return factorial;
+}
+
+double sin_compare(double radians)
+{
+    return custom_sin(radians) - sin(radians);
 }
